@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stocks tracker | Money hiver</title>
+    <link rel="stylesheet" href="/static/css/stocks.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Money hiver</div>
+        <section class="hero">
+            <h1>Stocks tracker</h1>
+            <h2>Global stock market data, major assets</h2>
+        </section>
+    </header>
+
+    <main>
+        <section class="stocks-content">
+            <h2>About stocks</h2>
+            <p>Stocks consist of all the shares by which ownership of a corporation or company is divided.</p>
+            <p>A single share of the stock means fractional ownership of the corporation in proportion to the total number of shares.</p>
+            <p>This typically entitles the stockholder to that fraction of the company's earnings, proceeds from liquidation of assets or voting power, often dividing these up in proportion to the number of like shares each stockholder owns.</p>
+        </section>
+
+        <section class="stocks-content">
+            <h2>Current prices</h2>
+            <div class="price-display">
+                <div class="price-card">
+                    <h3>Apple (AAPL)</h3>
+                    <div class="apple-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>NVIDIA (NVDA)</h3>
+                    <div class="nvidia-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Tesla (TSLA)</h3>
+                    <div class="tesla-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Amazon (AMZN)</h3>
+                    <div class="amazon-price">Loading...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stocks-content">
+            <h2>Price charts</h2>
+            <div class="chart-tabs-container">
+                <div class="chart-tabs">
+                    <button class="tab-button active" data-pair="AAPL">Apple</button>
+                    <button class="tab-button" data-pair="NVDA">NVIDIA</button>
+                    <button class="tab-button" data-pair="TSLA">Tesla</button>
+                    <button class="tab-button" data-pair="AMZN">Amazon</button>
+                </div>
+                <div class="chart-container" id="main-chart-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <p>Email: getnetassistance@gmail.com</p>
+            <p>© 2025 Money hiver. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/stocks.js"></script>
+</body>
+</html>

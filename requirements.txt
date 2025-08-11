@@ -1,0 +1,10 @@
+uvicorn
+fastapi
+dotenv
+bcrypt
+httpx
+pydantic
+typing
+python-multipart
+jinja2
+psycopg2

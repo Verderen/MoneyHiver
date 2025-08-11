@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money hiver</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Moneyhiver</div>
+            <ul class="nav-links">
+                <li><a href="#monitor">Monitor</a></li>
+                <li><a href="#advanced">Advanced</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+            <div class="auth-section">
+    {% if user %}
+        <div class="profile-dropdown">
+            <a href="{{ url_for('profile') }}" class="profile-circle">
+                {% if user.username %}
+                    <span class="avatar-text">{{ user.username[0]|upper }}</span>
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Profile">
+                {% endif %}
+            </a>
+            <div class="dropdown-content">
+                <a href="{{ url_for('profile') }}">Profile</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="auth-buttons">
+            <a href="{{ url_for('signin_page') }}" class="btn primary">Sign In</a>
+            <a href="{{ url_for('signup_page') }}" class="btn secondary">Sign Up</a>
+        </div>
+    {% endif %}
+</div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Money hiver</h1>
+            <h2>Crypto, exchange rates and stocks tracker</h2>
+            <p>Monitor the current rates of crypto, exchange rates and stocks in real time</p>
+        </section>
+
+        <section id="monitor" class="monitor-section">
+            <h2>Monitor it in real-time</h2>
+            <div class="buttons-container">
+                <div class="tracker-option">
+                    <a href="{{ url_for('crypto_page') }}" class="tracker-btn">crypto</a>
+                    <p>Real-time cryptocurrency prices. Track Bitcoin, Ethereum and more</p>
+                </div>
+                <div class="tracker-option">
+                    <a href="{{ url_for('exchange_rates_page') }}" class="tracker-btn">exchange rates</a>
+                    <p>Compare USD, EUR and others</p>
+                </div>
+                <div class="tracker-option">
+                    <a href="{{ url_for('stocks_page') }}" class="tracker-btn">stocks</a>
+                    <p>Global stock market data: track Apple, Tesla, Nvidia and other major equities</p>
+                </div>
+            </div>
+        </section>
+
+<section id="advanced" class="advanced-section">
+    <h1>Advanced</h1>
+    <h2>Currency converter</h2>
+    <div class="converter-form">
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>Your amount</label>
+                <input type="number" id="amount" placeholder="Fill in your amount of money">
+            </div>
+            <div class="converter-group">
+                <label>From</label>
+                <select id="from-currency">
+                    <option value="RUB">RUB</option>
+                    <option value="CNY">CNY</option>
+                    <option value="USD">USD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+        </div>
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>To</label>
+                <select id="to-asset">
+                    <option value="RUB">RUB</option>
+                    <option value="CNY">CNY</option>
+                    <option value="USD">USD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="convert()" id="calculate-btn" class="submit-btn">Convert</button>
+    </div>
+    <div id="result"></div>
+
+
+
+    <h2>Calculation of profitability/loss</h2>
+    <div class="converter-form">
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>Your amount in USD</label>
+                <input type="number" id="usdamount" placeholder="Fill in your amount of money">
+            </div>
+            <div class="converter-group">
+                <label>To</label>
+                <select id="usdto-asset">
+                    <option value="BTC">BTC</option>
+                    <option value="ETH">ETH</option>
+                    <option value="AAPL">AAPL</option>
+                    <option value="NVDA">NVDA</option>
+                    <option value="TSLA">TSLA</option>
+                    <option value="AMZN">AMZN</option>
+                </select>
+            </div>
+        </div>
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>Open price</label>
+                    <input type="number" id="price-before" placeholder="Fill in the open price">
+            </div>
+            <div class="converter-group">
+                <label>Close price</label>
+                    <input type="number" id="price-after" placeholder="Fill in the close price">
+            </div>
+        </div>
+        <button onclick="calculateProfitLoss()" id="usdcalculate-btn" class="submit-btn">Calculate</button>
+    </div>
+    <div id="usdresult"></div>
+
+
+
+    <h2>Calculate profit from accrued interest</h2>
+    <div class="converter-form">
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>Your amount</label>
+                <input type="number" id="aiamount" placeholder="Fill in your amount of money">
+            </div>
+            <div class="converter-group">
+                <label>From</label>
+                <select id="aifrom-currency">
+                    <option value="RUB">RUB</option>
+                    <option value="CNY">CNY</option>
+                    <option value="USD">USD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+        </div>
+        <div class="converter-row">
+            <div class="converter-group">
+                <label>Time period</label>
+                <select id="time-period">
+                    <option value="month">Month</option>
+                    <option value="year">Year</option>
+                </select>
+            </div>
+            <div class="converter-group">
+                <label>Interest rate</label>
+                <input type="number" id="interest_rate" placeholder="Fill in your interest rate">
+            </div>
+        </div>
+        <button onclick="calculateAccruedInterest()" id="aicalculate-btn" class="submit-btn">Convert</button>
+    </div>
+    <div id="airesult"></div>
+
+    <section class="notification-section">
+    <h2>Subscribe to notifications</h2>
+    {% if user_email %}
+    <div class="notification-form">
+        <form id="subscribeForm" method="POST" action="/subscribe">
+            <div class="form-group">
+                <label for="email">Your email:</label>
+                <input type="email" id="subscribe-email" name="email"
+                       value="{{ user_email }}" readonly required>
+            </div>
+            <div class="form-group">
+                <label for="asset">Asset:</label>
+                <select id="asset" name="asset" required>
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Target Price (USD):</label>
+                <input type="number" id="price" name="price" step="0.01" min="0.01" placeholder="Fill in the target price" required>
+            </div>
+            <button type="submit" class="submit-btn">Subscribe</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="auth-required">
+        <p>Please <a href="{{ url_for('signin_page') }}">sign in</a> to subscribe to notifications</p>
+    </div>
+    {% endif %}
+</section>
+
+<section id="contact" class="contact-section">
+    <h2>Contact administration</h2>
+    {% if user_email %}
+    <div class="contact-container">
+        <form id="contactForm" class="contact-form" method="POST" action="/message">
+            <div class="form-group">
+                <label for="name">Your name</label>
+                <input type="text" id="name" name="name" placeholder="Fill in your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Your email:</label>
+                <input type="email" id="contact-email" name="email" value="{{ user_email }}" readonly required>
+            </div>
+            <div class="form-group">
+                <label for="message">Your message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Fill in your message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="auth-required">
+        <p>Please <a href="{{ url_for('signin_page') }}">sign in</a> to contact administration</p>
+    </div>
+    {% endif %}
+</section>
+
+</section>
+
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <p>Email: getnetassistance@gmail.com</p>
+            <p>© 2025 Money hiver. All rights reserved.</p>
+        </div>
+    </footer>
+<div id="alert-container"></div>
+<div id="conversion-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Conversion Result</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="conversion-result">
+            <!-- Сюда будет вставлен результат -->
+        </div>
+        <div class="modal-footer">
+            <button class="submit-btn modal-close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="profitloss-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Profit/Loss Result</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="profitloss-result">
+            <!-- Сюда будет вставлен результат -->
+        </div>
+        <div class="modal-footer">
+            <button class="submit-btn modal-close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/script.js"></script>
+</body>
+</html>
