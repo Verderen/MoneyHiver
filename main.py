@@ -232,44 +232,10 @@ async def profile(request: Request):
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
-                "description": user.description,
                 "assets": assets
             }
         }
     )
-
-
-@app.post("/update_description")
-async def update_description(
-        request: Request,
-        description: str = Body(..., embed=True)
-):
-    try:
-        # Проверка авторизации
-        user = get_current_user(request)
-        if not user:
-            return JSONResponse({"error": "Unauthorized"}, status_code=401)
-
-        if not description:
-            return JSONResponse({"error": "Description is required"}, status_code=400)
-
-        # Обновление описания
-        User.update_description(user.id, description)
-
-        # Получение обновленного пользователя
-        updated_user = User.get_user_by_id(user.id)
-
-        return JSONResponse({
-            "success": "Description updated successfully",
-            "user": {
-                "id": updated_user.id,
-                "username": updated_user.username,
-                "email": updated_user.email,
-                "description": updated_user.description
-            }
-        })
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
 
 @app.post("/message")
 async def message(
@@ -550,3 +516,4 @@ async def get_assets(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+
