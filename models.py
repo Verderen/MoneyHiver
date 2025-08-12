@@ -2,11 +2,10 @@ from database import db_conn
 import bcrypt
 
 class User:
-    def __init__(self, user_id, username, email=None, description=None):
+    def __init__(self, user_id, username, email=None):
         self.id = user_id
         self.username = username
         self.email = email
-        self.description = description
 
     @staticmethod
     def get_user_by_credentials(email, password):
@@ -14,15 +13,15 @@ class User:
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "SELECT user_id, username, password_hash, email, description FROM users WHERE email = %s",
+                "SELECT user_id, username, password_hash, email FROM users WHERE email = %s",
                 (email,)
             )
             user_data = cursor.fetchone()
 
             if user_data:
-                user_id, username, stored_hash, user_email, description = user_data
+                user_id, username, stored_hash, user_email = user_data
                 if bcrypt.checkpw(password.encode(), stored_hash.encode()):
-                    return User(user_id, username, user_email, description)
+                    return User(user_id, username, user_email)
             return None
         finally:
             cursor.close()
@@ -34,7 +33,7 @@ class User:
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "SELECT user_id, username, email, description FROM users WHERE user_id = %s",
+                "SELECT user_id, username, email FROM users WHERE user_id = %s",
                 (user_id,)
             )
             user_data = cursor.fetchone()
@@ -55,20 +54,6 @@ class User:
             cursor.execute(
                 "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)",
                 (username, email, hashed_password.decode())
-            )
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def update_description(user_id, new_description):
-        conn = db_conn()
-        cursor = conn.cursor()
-        try:
-            cursor.execute(
-                "UPDATE  users SET description = %s WHERE user_id = %s",
-                (new_description, user_id)
             )
             conn.commit()
         finally:
