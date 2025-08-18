@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto tracker | Money hiver</title>
+    <link rel="stylesheet" href="/static/css/crypto.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Money hiver</div>
+        <section class="hero">
+            <h1>Crypto tracker</h1>
+            <h2>Real-time cryptocurrency prices and information</h2>
+        </section>
+    </header>
+
+    <main>
+        <section class="crypto-content">
+            <h2>About cryptocurrency</h2>
+            <p>A cryptocurrency is a digital currency designed to work through a computer network that is not reliant on any central authority, such as a government or bank, to uphold or maintain it.</p>
+            <p>Individual coin ownership records are stored in a digital ledger or blockchain, which is a computerized database that uses a consensus mechanism to secure transaction records, control the creation of additional coins, and verify the transfer of coin ownership.</p>
+        </section>
+
+        <section class="crypto-content">
+            <h2>Current prices</h2>
+            <div class="price-display">
+                <div class="price-card">
+                    <h3>Bitcoin (BTC)</h3>
+                    <div class="bitcoin-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Ethereum (ETH)</h3>
+                    <div class="ethereum-price">Loading...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="crypto-content">
+            <h2>Price charts</h2>
+            <div class="chart-tabs-container">
+                <div class="chart-tabs">
+                    <button class="tab-button active" data-pair="BINANCE:BTCUSDT">BTC/USDT</button>
+                    <button class="tab-button" data-pair="BINANCE:ETHUSDT">ETH/USDT</button>
+                </div>
+                <div class="chart-container" id="main-chart-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <p>Email: getnetassistance@gmail.com</p>
+            <p>© 2025 Money hiver. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/crypto.js"></script>
+</body>
+</html>
