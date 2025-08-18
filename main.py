@@ -334,44 +334,175 @@ async def calculate_profit_loss(
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
-@app.post("/accrued_interest")
-async def accrued_interest(
-        amount: float = Body(...),
+@app.post("/dividend")
+async def dividend(
+        price_of_1_share: float = Body(...),
         from_currency: str = Body(...),
-        time_period: str = Body(...),
-        interest_rate: float = Body(...)
+        number_of_shares: float = Body(...),
+        div_per_1_share: float = Body(...),
+        pay_period: str = Body(...),
+        own_period: float = Body(...),
+        tax_rate: float = Body(...),
+        div_growth: float = Body(...)
 ):
     try:
 
-        if amount <= 0:
-            return JSONResponse({"error": "Amount must be greater than zero!"}, status_code=400)
-        if interest_rate <= 0:
-            return JSONResponse({"error": "Interest rate must be greater than zero!"}, status_code=400)
-
-        period_multiplier = 1/12 if time_period == "month" else 1
+        if price_of_1_share <= 0:
+            return JSONResponse({"error": "The price of 1 share must be greater than zero!"}, status_code=400)
+        if number_of_shares <= 0:
+            return JSONResponse({"error": "The number of shares rate must be greater than zero!"}, status_code=400)
+        if div_per_1_share <= 0:
+            return JSONResponse({"error": "The dividend per 1 share must be greater than zero!"}, status_code=400)
+        if own_period <= 0:
+            return JSONResponse({"error": "The ownership period must be greater than zero!"}, status_code=400)
+        if tax_rate <= 0:
+            return JSONResponse({"error": "The tax rate must be greater than zero!"}, status_code=400)
 
         async with httpx.AsyncClient() as client:
 
             response = await client.get(f"https://openexchangerates.org/api/latest.json?app_id={API_KEY_ER}")
             data = response.json()
             rates = data['rates']
+
             if from_currency not in rates:
                 return JSONResponse({"error": "Currency is not supported!"}, status_code=400)
 
-            percentage = (amount * interest_rate * period_multiplier) / 100
-            profit = amount + percentage
+            usd_rate = rates[from_currency]
+            price_of_1_share_usd = price_of_1_share / usd_rate
+            div_per_1_share_usd = div_per_1_share / usd_rate
+            period_multiplier = 1 / 12 if pay_period == "month" else 1
+            tax_percent = tax_rate / 100
+            growth_percent = div_growth / 100 if div_growth else 0
+
+            total_with_div_tax = number_of_shares * div_per_1_share_usd * (1-tax_percent) * period_multiplier * (((1+growth_percent)**own_period)-1)/growth_percent if growth_percent else 0
+            total_with_tax_no_div = number_of_shares * div_per_1_share_usd * (1-tax_percent) * period_multiplier * own_period
+            total_with_div_no_tax = number_of_shares * div_per_1_share_usd * period_multiplier * (((1+growth_percent)**own_period)-1)/growth_percent if growth_percent else 0
+            total_no_div_no_tax = number_of_shares * div_per_1_share_usd * period_multiplier * own_period
+
+            annual_div_per_share = div_per_1_share_usd * period_multiplier
+            annual_div_per_share_with_tax = annual_div_per_share * (1-tax_percent)
+
+            total_cost = number_of_shares * price_of_1_share_usd
+
+            x = (((1+growth_percent)**own_period)-1)/growth_percent if growth_percent else 0
+            y = number_of_shares * div_per_1_share_usd * period_multiplier * x
+
+            div_yield_with_tax = (annual_div_per_share_with_tax/price_of_1_share_usd) * 100
+            div_yield_no_tax = (annual_div_per_share/price_of_1_share_usd) * 100
+            div_yield_with_tax_whole_period = (total_with_div_tax/total_cost) * 100
+            div_yield_no_tax_whole_period = (y/total_cost) * 100
+
+            total_with_div_tax_orig = total_with_div_tax * usd_rate
+            total_with_div_no_tax_orig = total_with_div_no_tax * usd_rate
+            total_with_tax_no_div_orig = total_with_tax_no_div * usd_rate
+            total_no_div_no_tax_orig = total_no_div_no_tax * usd_rate
 
             return JSONResponse({
                 "status": "success",
                 "result": {
-                    "amount": amount,
-                    "from_currency": from_currency,
-                    "time_period": time_period,
-                    "interest_rate": interest_rate,
-                    "percentage": percentage,
-                    "profit": profit
+                    "total_with_div_tax": total_with_div_tax_orig,
+                    "total_with_div_no_tax": total_with_div_no_tax_orig,
+                    "total_with_tax_no_div": total_with_tax_no_div_orig,
+                    "total_no_div_no_tax": total_no_div_no_tax_orig,
+                    "div_yield_with_tax": div_yield_with_tax,
+                    "div_yield_no_tax": div_yield_no_tax,
+                    "div_yield_with_tax_whole_period": div_yield_with_tax_whole_period,
+                    "div_yield_no_tax_whole_period": div_yield_no_tax_whole_period
                 }
             })
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.post("/margin")
+async def margin(
+        asset_type: str = Body(...),
+        pair: Optional[str] = Body(None),
+        price_per_1_share: float = Body(...),
+        number_of_shares: float = Body(...),
+        leverage: float = Body(...)
+):
+    try:
+
+        if price_per_1_share <= 0 or number_of_shares <= 0 or leverage <= 0:
+            return JSONResponse({"error": "Price per 1 share, number of shares and leverage must be greater than zero!"}, status_code=400)
+
+        if asset_type == "crypto":
+
+            if not pair:
+                return JSONResponse({"error": "Pair is required!"}, status_code=400)
+
+            volume = price_per_1_share * number_of_shares
+            margin = volume / leverage
+
+            result = {
+                "pair": pair,
+                "price_per_1_share": price_per_1_share,
+                "number_of_shares": number_of_shares,
+                "volume": volume,
+                "leverage": leverage,
+                "margin": margin
+            }
+
+        elif asset_type == "forex":
+
+            if not pair:
+               return JSONResponse({"error": "Pair is required!"}, status_code=400)
+
+            volume = price_per_1_share * number_of_shares
+            margin = volume / leverage
+
+            result = {
+                "pair": pair,
+                "price_per_1_share": price_per_1_share,
+                "number_of_shares": number_of_shares,
+                "volume": volume,
+                "leverage": leverage,
+                "margin": margin
+            }
+
+        elif asset_type == "futures":
+
+            if not pair:
+                return JSONResponse({"error": "Pair is required!"}, status_code=400)
+
+            volume = price_per_1_share * number_of_shares
+            margin = volume / leverage
+
+            result = {
+                "pair": pair,
+                "price_per_1_share": price_per_1_share,
+                "number_of_shares": number_of_shares,
+                "volume": volume,
+                "leverage": leverage,
+                "margin": margin
+            }
+
+        elif asset_type == "stocks":
+
+            if not pair:
+                return JSONResponse({"error": "Pair is required!"}, status_code=400)
+
+            volume = price_per_1_share * number_of_shares
+            margin = volume / leverage
+
+            result = {
+                "pair": pair,
+                "price_per_1_share": price_per_1_share,
+                "number_of_shares": number_of_shares,
+                "volume": volume,
+                "leverage": leverage,
+                "margin": margin
+            }
+
+        else:
+            return JSONResponse({"error": "Invalid asset type!"}, status_code=400)
+
+        return JSONResponse({
+            "status": "success",
+            "asset_type": asset_type,
+            "result": result
+        })
+
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
@@ -516,4 +647,3 @@ async def get_assets(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
-
