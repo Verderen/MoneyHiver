@@ -7,4 +7,6 @@ pydantic
 typing
 python-multipart
 jinja2
+
 psycopg2
+aiosmtplib
