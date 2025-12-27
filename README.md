@@ -10,7 +10,7 @@ For personal use.
 > **Note:** The app might take a moment to load on first visit (free hosting).
 
 ## ✨ Features
-- **Real-time tracking**: Monitor cryptocurrency, exchange rates and stock prices
+- **Real-time tracking**: Track cryptocurrency, exchange rates and stock prices
 - **Interactive charts**: Visualize price history with interactive graphs
 - **Financial portfolio**: Track your investments in one place
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
