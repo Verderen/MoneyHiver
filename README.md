@@ -18,8 +18,10 @@ For personal use.
 ## 🛠️ Tech Stack
 - **Frontend**: HTML, JavaScript, CSS
 - **Backend**: Python (FastAPI)
-- **Charts**: Chart.js
-- **API**: CoinGecko API, Alpha Vantage&Finnhub
+- **Charts&widgets**: Chart.js, MQL5, Elfsight
+- **API**: Binance, Open exchange rates, Finnhub
+- **Email sending**: Resend
+- **DB hosting**: Neon
 - **Deployment**: Render
 
 ## 📱 How to Use
