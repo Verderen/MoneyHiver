@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title translate="no">Exchange rates tracker | Money Hiver</title>
+    <link rel="stylesheet" href="/static/css/er.css">
+</head>
+<body>
+    <header>
+        <div class="logo" translate="no">Money hiver</div>
+        <section class="hero">
+            <h1>Exchange rates tracker</h1>
+            <h2>Compare the major currencies</h2>
+        </section>
+    </header>
+
+    <main>
+        <section class="er-content">
+            <h2>About the currency</h2>
+            <p>A currency is a standardization of money in any form, in use or circulation as a medium of exchange.</p>
+            <p>A more general definition is that a currency is a system of money in common use within a specific environment over time, especially for people in a nation state.</p>
+        </section>
+
+        <section class="er-content">
+            <h2>Current prices</h2>
+            <div class="price-display">
+                <div class="price-card">
+                    <h3>Dollar (USD)/Ruble (RUB)</h3>
+                    <div class="usd-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Euro (EUR)/Ruble (RUB)</h3>
+                    <div class="eur-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Yuan (CNY)/Ruble (RUB)</h3>
+                    <div class="cny-price">Loading...</div>
+                </div>
+                <div class="price-card">
+                    <h3>Franc (CHF)/Ruble (RUB)</h3>
+                    <div class="chf-price">Loading...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="er-content">
+            <h2>Currency charts</h2>
+            <div class="chart-controls">
+                <div class="chart-selector">
+                    <select id="currency-select">
+                        <option value="USDRUB">USD/RUB</option>
+                        <option value="EURRUB">EUR/RUB</option>
+                        <option value="EURUSD">EUR/USD</option>
+                        <option value="USDJPY">USD/JPY</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+    <div id="mql5-widget-container">
+
+    </div>
+    <div class="last-update">
+        Last updated: <span id="last-update">-</span>
+    </div>
+</div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <p>Email: getnetassistance@gmail.com</p>
+            <p translate="no">© 2025 Money hiver. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/er.js"></script>
+</body>
+</html>
